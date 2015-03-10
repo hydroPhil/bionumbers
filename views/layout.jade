@@ -1,0 +1,38 @@
+doctype html
+html
+    head
+        meta(http-equiv="content-type", content="text/html; charset=UTF-8")
+        meta(charset="utf-8")
+        meta(name="generator", content="Bootply")
+        meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
+        title= title
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.min.css')
+    body
+        #header.navbar.navbar-default.navbar-fixed-top
+            .navbar-header
+                button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target=".navbar-collapse")
+                    i.icon-reorder
+                a.navbar-brand(href="/")=title
+            nav.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li
+                        a(href="/") Explore
+                    li
+                        a(href="curate") Curate
+                    li
+                        a(href="about") About
+                ul.nav.navbar-nav.pull-right
+                    li.dropdown
+                        a#nbAcctDD.dropdown-toggle(href="#", data-toggle="dropdown")
+                            i.icon-user
+                            | Admin
+                            i.icon-sort-down
+                        ul.dropdown-menu.pull-right
+                            li
+                                a(href="#") Log Out
+        #wrapper
+            block content
+        script(src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
+        script(src='/bootstrap/js/bootstrap.min.js')
