@@ -1,0 +1,55 @@
+{
+ "name": "Life",
+ "children": [
+  {
+   "name": "Archaea",
+   "children": [
+    {"name": "Archaea", "size": 345}
+   ]
+  },
+  {
+   "name": "Bacteria",
+   "children": [
+    {"name": "Eubacteria", "size": 456}
+   ]
+  },
+  {
+   "name": "Eukarya",
+   "children": [
+    {"name": "Protoctista", "size": 345},
+    {"name": "Fungi", "size": 1759},
+    {"name": "Plantae", "size": 2165},
+    {
+     "name": "Animal",
+     "children": [
+      {
+       "name": "Chordata", 
+       "children": [
+        {
+         "name": "Mammalia", 
+         "children": [
+          {"name": "Prototheria", "size": 1375},
+          {"name": "Theria", "size": 8746}
+         ]
+        },
+        {"name": "Amphibia", "size": 1375},
+        {"name": "Aves", "size": 8746},
+        {"name": "Osteichthyes", "size": 2202},
+        {"name": "Reptilia", "size": 1382},
+        {"name": "Chondrichthyes", "size": 1629}
+       ]
+      },
+      {"name": "Molluska", "size": 2047},
+      {"name": "Porifera", "size": 1375},
+      {"name": "Cnidaria", "size": 8746},
+      {"name": "Platyhelminthes", "size": 2202},
+      {"name": "Nematoda", "size": 1382},
+      {"name": "Annelida", "size": 1629},
+      {"name": "Arthropoda", "size": 1675},
+      {"name": "Echinodermata", "size": 2042}
+     ]
+   }
+   ]
+  }
+ ]
+}
