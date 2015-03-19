@@ -7,7 +7,7 @@ intertree.tree = function(json, config) {
   }
 
   var margin = {top: 20, right: 20, bottom: 20, left: 50},
-      width = 1200 - margin.right - margin.left,
+      width = 800 - margin.right - margin.left,
       height = 800 - margin.top - margin.bottom;
       
   var i = 0,
@@ -50,13 +50,15 @@ intertree.tree = function(json, config) {
 
 
 function update(source) {
+  // custom stuff!!
+  var nodewidth = 100;
 
   // Compute the new tree layout.
   var nodes = tree.nodes(root).reverse(),
       links = tree.links(nodes);
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
+  nodes.forEach(function(d) { d.y = d.depth * nodewidth; });
 
   // Update the nodes…
   var node = svg.selectAll("g.node")
