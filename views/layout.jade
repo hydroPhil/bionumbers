@@ -6,10 +6,10 @@ html
         meta(name="generator", content="Bootply")
         meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
         title= title
-        link(rel='stylesheet', href='/stylesheets/style.css')
         link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
         link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.min.css')
         link(rel='stylesheet', href='/stylesheets/treeview.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
     body
         #header.navbar.navbar-default.navbar-fixed-top
             .navbar-header
@@ -35,7 +35,9 @@ html
                                 a(href="#") Log Out
         #wrapper
             block content
+        script(src='http://d3js.org/d3.v3.min.js')
         script(src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
         script(src='/bootstrap/js/bootstrap.min.js')
-        script(src='/javascripts/sample.js')
-        script(src='http://d3js.org/d3.v3.min.js')
+        script(src='/javascripts/d3sparql.js')
+        script(src='/javascripts/treeview.js')
+        script(src='/javascripts/gui.js')

@@ -1,6 +1,6 @@
 var margin = {top: 20, right: 20, bottom: 20, left: 50},
-    width = 1200 - margin.right - margin.left,
-    height = 800 - margin.top - margin.bottom;
+    width = 800 - margin.right - margin.left,
+    height = 600 - margin.top - margin.bottom;
     
 var i = 0,
     duration = 750,
@@ -12,13 +12,13 @@ var tree = d3.layout.tree()
 var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#treeview").append("svg")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.json("life.json", function(error, flare) {
+d3.json("javascripts/life.json", function(error, flare) {
   root = flare;
   root.x0 = height / 2;
   root.y0 = 0;
@@ -35,16 +35,18 @@ d3.json("life.json", function(error, flare) {
   update(root);
 });
 
-d3.select(self.frameElement).style("height", "800px");
+d3.select(self.frameElement).style("height", "600px");
 
 function update(source) {
+  // custom stuff!!
+  var nodewidth = 100;
 
   // Compute the new tree layout.
   var nodes = tree.nodes(root).reverse(),
       links = tree.links(nodes);
 
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
+  nodes.forEach(function(d) { d.y = d.depth * nodewidth; });
 
   // Update the nodes…
   var node = svg.selectAll("g.node")
@@ -133,5 +135,7 @@ function click(d) {
     d.children = d._children;
     d._children = null;
   }
+  var species = $('text', this).html();
+  $('#proptable td').html(species);
   update(d);
 }
