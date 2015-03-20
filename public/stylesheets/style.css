@@ -42,14 +42,26 @@ body {
 .div-float {
   float: left;
 }
-#treeview {
+#spec_treeview,
+#prop_treeview {
+  position: relative;
+}
+#spec_treeview svg {
   overflow: scroll;
 }
 #proptable {
   width: 20%;
 }
-ul {
-  list-style-type: none;
+#proptable td,
+#proptable th {
+  padding-right: 5px;
+  font-size: x-small;
+}
+#search_input {
+  position: absolute;
+  top: 20px;
+  right: 100px;
+  width: 200px;
 }
 @media (max-width 992px) {
   body {

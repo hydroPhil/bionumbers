@@ -4,14 +4,18 @@ block content
     #main-wrapper
         #main
             .page-header
-                h3 Explore properties
-            #prop_treeview.div-float
+                h4 Select common properties to compare between different organisms
+                input#search_input.form-control(type='text', placeholder='Search properties', list="prop_datalist")
+                datalist#prop_datalist
+            #prop_treeview.div-float.scrollable
             #proptable.div-float.table.table-condensed
+                h5#propname
                 table
                     thead
                         tr
-                            th Property
+                            th.col-md-3 Property
                             th Value
+                            th Unit
+                            th Organism
                     tbody
-                        tr
-                            td test
+            #json-dump.hidden

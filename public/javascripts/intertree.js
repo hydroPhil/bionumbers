@@ -51,7 +51,7 @@ intertree.tree = function(json, config) {
 
 function update(source) {
   // custom stuff!!
-  var nodewidth = 100;
+  var nodewidth = 80;
 
   // Compute the new tree layout.
   var nodes = tree.nodes(root).reverse(),
@@ -147,6 +147,7 @@ function click(d) {
     d.children = d._children;
     d._children = null;
   }
+  nodeclick(this);
   update(d);
 }
 }

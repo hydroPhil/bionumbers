@@ -4,14 +4,17 @@ block content
     #main-wrapper
         #main
             .page-header
-                h3 Explore species and their properties
-            #spec_treeview.div-float
+                h4 Explore species and their properties, displays available propeties of children
+            #spec_treeview.div-float.scrollable
+                input#search_input.form-control
             #proptable.div-float.table.table-condensed
+                h4#specname
                 table
                     thead
                         tr
-                            th Property
+                            th.col-md-1 Property
                             th Value
+                            th Unit
+                            th Organism
                     tbody
-                        tr
-                            td test
+            #json-dump.hidden

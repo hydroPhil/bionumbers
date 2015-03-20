@@ -55,7 +55,7 @@ d3sparql.query = function(endpoint, sparql, callback) {
   var mime = "application/sparql-results+json"
   d3.xhr(url, mime, function(request) {
     var json = request.responseText
-    console.log(json)
+    // console.log(json)
     callback(JSON.parse(json))
   })
 /*
