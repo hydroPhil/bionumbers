@@ -1,4 +1,4 @@
-function exec() {
+function exec_spec() {
     var sparql = "\
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
         PREFIX up: <http://purl.uniprot.org/core/> \
@@ -14,28 +14,53 @@ function exec() {
           ?parent up:scientificName ?parent_name . \
         }";
     var endpoint = "http://togostanza.org/sparql";
-    d3sparql.query(endpoint, sparql, render)
+    d3sparql.query(endpoint, sparql, render_spec)
 }
-function render(json) {
+function exec_prop() {
+    var sparql = "\
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
+        SELECT ?root_name ?parent_name ?child_name \
+        WHERE \
+        { \
+          VALUES ?root_name { 'property' } \
+          ?root rdfs:label ?root_name . \
+          ?child rdfs:subPropertyOf+ ?root . \
+          ?child rdfs:subPropertyOf ?parent . \
+          ?child rdfs:label ?child_name . \
+          ?parent rdfs:label ?parent_name . \
+        }";
+    var endpoint = "http://localhost:5820/bioprops/query/";
+    d3sparql.query(endpoint, sparql, render_prop)
+}
+function render_spec(json) {
   var config = {
     // for d3sparql.tree()
     "root": "root_name",
     "parent": "parent_name",
     "child": "child_name",
-    "selector": "#treeview"
+    "selector": "#spec_treeview"
   }
   intertree.tree(json, config)
 }
 
-function exec_offline() {
-  d3.json("hypsibiidae.json", render)
+function render_prop(json) {
+  var config = {
+    // for d3sparql.tree()
+    "root": "root_name",
+    "parent": "parent_name",
+    "child": "child_name",
+    "selector": "#prop_treeview"
+  }
+  intertree.tree(json, config)
 }
-function toggle() {
-  d3sparql.toggle()
-}
+
 $(document).ready(function() {
     // RUN!
-    exec();
+    if ($('#spec_treeview').length) {
+        exec_spec();
+    } else if ($('#prop_treeview').length) {
+        exec_prop();
+    }
     $('#treeview').mousedown( function(e){
         e.preventDefault();
 //         prefix dwc: <http://rs.tdwg.org/dwc/terms/>

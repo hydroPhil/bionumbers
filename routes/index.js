@@ -14,8 +14,8 @@ router.get('/about', function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/curate', function(req, res, next) {
-  res.render('curate', arg_json);
+router.get('/properties', function(req, res, next) {
+  res.render('properties', arg_json);
 });
 
 module.exports = router;
