@@ -5,8 +5,9 @@ block content
         #main
             .page-header
                 h4 Explore species and their properties, displays available propeties of children
+                input#search_input.form-control(type='text', placeholder='Search species', list="spec_datalist")
+                datalist#spec_datalist
             #spec_treeview.div-float.scrollable
-                input#search_input.form-control
             #proptable.div-float.table.table-condensed
                 h4#specname
                 table

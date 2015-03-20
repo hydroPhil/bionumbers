@@ -1,7 +1,16 @@
+jQuery.fn.d3Click = function () {
+  this.each(function (i, e) {
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+    e.dispatchEvent(evt);
+  });
+};
+
 // sparql query from uniprot taxonomy for different species
 function exec_spec() {
     // get all present queries from bionumbers
-    var endpoint = "http://localhost:5820/bionumbers/query/";
+    var endpoint = "http://bionumbers2a.pagekite.me/openrdf-sesame";
     var sparql = "\
         PREFIX owl: <http://www.w3.org/2002/07/owl#> \
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
@@ -79,6 +88,13 @@ function render_spec(json) {
     "selector": "#spec_treeview"
   };
   $('#json-dump').html(JSON.stringify(json.results.bindings));
+    // add stuff to search input
+    var datalist = " ";
+    $.each(json.results.bindings, function() {
+       datalist += "<option value ='" + this.child_name.value + "'>";
+    });
+    $('#spec_datalist').html(datalist);
+    // build tree
   intertree.tree(json, config);
 }
 
@@ -177,7 +193,7 @@ function nodeclick(thisnode){
                           dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
-        var endpoint = "http://localhost:5820/bionumbers/query/";
+        var endpoint = "http://bionumbers2a.pagekite.me/openrdf-sesame";
         d3sparql.query(endpoint, sparql, render_spec_table);
 
     } else if ($('#prop_treeview').length) {
@@ -208,7 +224,7 @@ function nodeclick(thisnode){
                           dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
-        var endpoint = "http://localhost:5820/bionumbers/query/";
+        var endpoint = "http://bionumbers2a.pagekite.me/openrdf-sesame";
         d3sparql.query(endpoint, sparql, render_prop_table);
     }
 }
@@ -224,10 +240,11 @@ $(document).ready(function() {
     $("#search_input").bind('input', function () {
         var query = $(this).val();
         if (query.length > 4) {
+            console.log(query);
             $('text:contains("' + query +'")').filter(function(){
-                if ($(this).text() == query) {
-                    console.log($(this).parent().click());
-                    $(this).parent().trigger('click');
+                if ($(this).text() === query) {
+                    console.log($(this).text());
+                    $(this).d3Click();
                 };
             });
         };
