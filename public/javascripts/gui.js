@@ -195,7 +195,7 @@ function nodeclick(thisnode){
         // query with case insensitive filter
         var sparql = "\
         prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT ?name ?value ?unit ?organism ? link\
+        SELECT ?name ?value ?unit ?organism ?link\
         WHERE { ?property a dwc:MeasurementOrFact; \
                           dwc:measurementType ?name ; \
                           dwc:measurementValue ?value ; \
