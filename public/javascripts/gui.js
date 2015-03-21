@@ -1,5 +1,5 @@
-// var external_endpoint = "http://localhost:5820/bionumbers2/query";
-var external_endpoint = 'http://hydrophil.pagekite.me/bionumbers2/query'
+var external_endpoint = "http://localhost:5820/bionumbers2/query";
+// var external_endpoint = 'http://hydrophil.pagekite.me/bionumbers2/query'
 var uniprot_endpoint = "http://togostanza.org/sparql"
 jQuery.fn.d3Click = function () {
   this.each(function (i, e) {
@@ -123,12 +123,11 @@ function render_prop_table(json) {
     // console.log(JSON.stringify(json.results));
     var tableContent = '';
     $.each(json.results.bindings, function(){
-        var link = this.link.value;
-        var thisjosn = this;
-        var link_list = link.replace("<","").replace(">","").split("/");
-        var id = link_list[link_list.length -1];
-        var rest_link = "http://www.ebi.ac.uk/europepmc/webservices/rest/search/query=ext_id:"+id+"%20src:med&format=json"
         // rest call to get year of publication
+        // var link = this.link.value;
+        // var link_list = link.replace("<","").replace(">","").split("/");
+        // var id = link_list[link_list.length -1];
+        // var rest_link = "http://www.ebi.ac.uk/europepmc/webservices/rest/search/query=ext_id:"+id+"%20src:med&format=json"
         // $.getJSON(rest_link, function(data){
         //     var year = data.resultList.result[0].pubYear;
         //     console.log(year);
@@ -195,13 +194,12 @@ function nodeclick(thisnode){
         // query with case insensitive filter
         var sparql = "\
         prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT ?name ?value ?unit ?organism ?link\
+        SELECT ?name ?value ?unit ?organism\
         WHERE { ?property a dwc:MeasurementOrFact; \
                           dwc:measurementType ?name ; \
                           dwc:measurementValue ?value ; \
                           dwc:measurementUnit ?unit ; \
-                          dwc:organismName ?organism ; \
-                          bion2:associatedPrimarySources ?link . \
+                          dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
         d3sparql.query(external_endpoint, sparql, render_spec_table);
@@ -226,13 +224,12 @@ function nodeclick(thisnode){
         // query with case insensitive filter
         var sparql = "\
         prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT ?name ?value ?unit ?organism ?link \
+        SELECT ?name ?value ?unit ?organism \
         WHERE { ?property a dwc:MeasurementOrFact; \
                           dwc:measurementType ?name ; \
                           dwc:measurementValue ?value ; \
                           dwc:measurementUnit ?unit ; \
-                          dwc:organismName ?organism ; \
-                          bion2:associatedPrimarySources ?link . \
+                          dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
         d3sparql.query(external_endpoint, sparql, render_prop_table);
