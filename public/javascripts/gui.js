@@ -1,5 +1,5 @@
-var external_endpoint = "http://localhost:5820/bionumbers2/query";
-// var external_endpoint = 'http://hydrophil.pagekite.me/bionumbers2/query'
+// var external_endpoint = "http://localhost:5820/bionumbers2/query";
+var external_endpoint = 'http://hydrophil.pagekite.me/bionumbers2/query'
 var uniprot_endpoint = "http://togostanza.org/sparql"
 jQuery.fn.d3Click = function () {
   this.each(function (i, e) {
