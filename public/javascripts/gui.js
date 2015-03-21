@@ -10,7 +10,7 @@ jQuery.fn.d3Click = function () {
 // sparql query from uniprot taxonomy for different species
 function exec_spec() {
     // get all present queries from bionumbers
-    var endpoint = "http://bionumbers2a.pagekite.me/openrdf-sesame";
+    var endpoint = "http://localhost:5820/bionumbers/query/";
     var sparql = "\
         PREFIX owl: <http://www.w3.org/2002/07/owl#> \
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
@@ -193,7 +193,7 @@ function nodeclick(thisnode){
                           dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
-        var endpoint = "http://bionumbers2a.pagekite.me/openrdf-sesame";
+        var endpoint = "http://localhost:5820/bionumbers/query/";
         d3sparql.query(endpoint, sparql, render_spec_table);
 
     } else if ($('#prop_treeview').length) {
@@ -224,7 +224,7 @@ function nodeclick(thisnode){
                           dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
-        var endpoint = "http://bionumbers2a.pagekite.me/openrdf-sesame";
+        var endpoint = "http://localhost:5820/bionumbers/query/";
         d3sparql.query(endpoint, sparql, render_prop_table);
     }
 }
