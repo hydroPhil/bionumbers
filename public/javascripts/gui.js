@@ -123,6 +123,16 @@ function render_prop_table(json) {
     // console.log(JSON.stringify(json.results));
     var tableContent = '';
     $.each(json.results.bindings, function(){
+        var link = this.link.value;
+        var thisjosn = this;
+        var link_list = link.replace("<","").replace(">","").split("/");
+        var id = link_list[link_list.length -1];
+        var rest_link = "http://www.ebi.ac.uk/europepmc/webservices/rest/search/query=ext_id:"+id+"%20src:med&format=json"
+        // rest call to get year of publication
+        // $.getJSON(rest_link, function(data){
+        //     var year = data.resultList.result[0].pubYear;
+        //     console.log(year);
+        // });
         tableContent += '<tr>';
         tableContent += '<td>' + this.name.value + '</td>';
         tableContent += '<td>' + this.value.value + '</td>';
@@ -185,12 +195,13 @@ function nodeclick(thisnode){
         // query with case insensitive filter
         var sparql = "\
         prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT ?name ?value ?unit ?organism \
+        SELECT ?name ?value ?unit ?organism ? link\
         WHERE { ?property a dwc:MeasurementOrFact; \
                           dwc:measurementType ?name ; \
                           dwc:measurementValue ?value ; \
                           dwc:measurementUnit ?unit ; \
-                          dwc:organismName ?organism . \
+                          dwc:organismName ?organism ; \
+                          bion2:associatedPrimarySources ?link . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
         d3sparql.query(external_endpoint, sparql, render_spec_table);
@@ -215,12 +226,13 @@ function nodeclick(thisnode){
         // query with case insensitive filter
         var sparql = "\
         prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT ?name ?value ?unit ?organism  \
+        SELECT ?name ?value ?unit ?organism ?link \
         WHERE { ?property a dwc:MeasurementOrFact; \
                           dwc:measurementType ?name ; \
                           dwc:measurementValue ?value ; \
                           dwc:measurementUnit ?unit ; \
-                          dwc:organismName ?organism . \
+                          dwc:organismName ?organism ; \
+                          bion2:associatedPrimarySources ?link . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
         d3sparql.query(external_endpoint, sparql, render_prop_table);
