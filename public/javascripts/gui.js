@@ -1,3 +1,6 @@
+// var external_endpoint = "http://localhost:5820/bionumbers2/query";
+var external_endpoint = 'http://bionumbers2a.pagekite.me/openrdf-sesame/repositories/bionumbers2-c'
+var uniprot_endpoint = "http://togostanza.org/sparql"
 jQuery.fn.d3Click = function () {
   this.each(function (i, e) {
     var evt = document.createEvent("MouseEvents");
@@ -10,7 +13,6 @@ jQuery.fn.d3Click = function () {
 // sparql query from uniprot taxonomy for different species
 function exec_spec() {
     // get all present queries from bionumbers
-    var endpoint = "http://localhost:5820/bionumbers/query/";
     var sparql = "\
         PREFIX owl: <http://www.w3.org/2002/07/owl#> \
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
@@ -20,7 +22,7 @@ function exec_spec() {
                           dwc:organismName ?name . \
         } \
     ";
-    var url = endpoint + "?query=" + encodeURIComponent(sparql)
+    var url = external_endpoint + "?query=" + encodeURIComponent(sparql)
     var mime = "application/sparql-results+json"
     // specialized query
     d3.xhr(url, mime, function(request) {
@@ -38,7 +40,6 @@ function exec_spec() {
         };
         // query with species filter, right now limited too 100 species
         var filter_string = species_list.slice(1,limit).join(' || ');
-        var endpoint = "http://togostanza.org/sparql";
         var sparql = "\
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
             PREFIX up: <http://purl.uniprot.org/core/> \
@@ -57,14 +58,14 @@ function exec_spec() {
                 FILTER (" + filter_string + ") \
               } \
             }";
-        d3sparql.query(endpoint, sparql, render_spec);
+        d3sparql.query(uniprot_endpoint, sparql, render_spec);
     })
 }
 // sparql query from bionumbers for different properties
 function exec_prop() {
     var sparql = "\
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
-        SELECT ?root_name ?parent_name ?child_name \
+        SELECT DISTINCT ?root_name ?parent_name ?child_name \
         WHERE \
         { \
           VALUES ?root_name { 'property' } \
@@ -74,8 +75,7 @@ function exec_prop() {
           ?child rdfs:label ?child_name . \
           ?parent rdfs:label ?parent_name . \
         }";
-    var endpoint = "http://localhost:5820/bioprops/query/";
-    d3sparql.query(endpoint, sparql, render_prop);
+    d3sparql.query(external_endpoint, sparql, render_prop);
 }
 
 // render json and build tree
@@ -193,8 +193,7 @@ function nodeclick(thisnode){
                           dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
-        var endpoint = "http://localhost:5820/bionumbers/query/";
-        d3sparql.query(endpoint, sparql, render_spec_table);
+        d3sparql.query(external_endpoint, sparql, render_spec_table);
 
     } else if ($('#prop_treeview').length) {
         property = $(thisnode).find('text').html();
@@ -224,8 +223,7 @@ function nodeclick(thisnode){
                           dwc:organismName ?organism . \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
-        var endpoint = "http://localhost:5820/bionumbers/query/";
-        d3sparql.query(endpoint, sparql, render_prop_table);
+        d3sparql.query(external_endpoint, sparql, render_prop_table);
     }
 }
 $(document).ready(function() {
