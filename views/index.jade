@@ -7,14 +7,14 @@ block content
                 h4 Explore species and their properties, displays available propeties of children
                 input#search_input.form-control(type='text', placeholder='Search species', list="spec_datalist")
                 datalist#spec_datalist
-            #spec_treeview.div-float.scrollable
+            #spec_treeview.scrollable.col-md-8
                 | loading treeview
-            #proptable.div-float.table.table-condensed
+            #proptable.col-md-4
                 h4#specname
-                table
+                table.table.table-condensed
                     thead
                         tr
-                            th.col-md-1 Property
+                            th Property
                             th Value
                             th Unit
                             th Organism

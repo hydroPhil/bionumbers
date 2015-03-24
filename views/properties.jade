@@ -7,17 +7,16 @@ block content
                 h4 Select common properties to compare between different organisms
                 input#search_input.form-control(type='text', placeholder='Search properties', list="prop_datalist")
                 datalist#prop_datalist
-            #prop_treeview.div-float.scrollable
+            #prop_treeview.scrollable.col-md-8
                 | loading treeview
-            #proptable.div-float.table.table-condensed
+            #proptable.col-md-4
                 h5#propname
-                table
+                table.table.table-condensed
                     thead
                         tr
-                            th.col-md-3 Property
+                            th Property
                             th Value
                             th Unit
                             th Organism
-                            th Year
                     tbody
             #json-dump.hidden

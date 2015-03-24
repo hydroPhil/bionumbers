@@ -49,9 +49,6 @@ body {
 #spec_treeview svg {
   overflow: scroll;
 }
-#proptable {
-  width: 20%;
-}
 #proptable td,
 #proptable th {
   padding-right: 5px;
