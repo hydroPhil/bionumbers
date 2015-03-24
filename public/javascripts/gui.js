@@ -94,6 +94,8 @@ function render_spec(json) {
        datalist += "<option value ='" + this.child_name.value + "'>";
     });
     $('#spec_datalist').html(datalist);
+    // empty div
+    $('#spec_treeview').empty();
     // build tree
   intertree.tree(json, config);
 }
@@ -115,6 +117,8 @@ function render_prop(json) {
        datalist += "<option value ='" + this.child_name.value + "'>";
     });
     $('#prop_datalist').html(datalist);
+    // empty div
+    $('#prop_treeview').empty();
     // build tree
     intertree.tree(json, config);
 }
