@@ -86,11 +86,9 @@ function update(source) {
       .duration(duration)
       .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
-  // added custom class attribute
   nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
-      .attr("class", function(d) { return d._children ? "closed" : "open"; });
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
 
   nodeUpdate.select("text")
       .style("fill-opacity", 1);
@@ -149,9 +147,7 @@ function click(d) {
     d.children = d._children;
     d._children = null;
   }
-  if ($("#node_query").attr("query") === "true") {
-    nodeclick(this);
-  }
+  nodeclick(this);
   update(d);
 }
 }
