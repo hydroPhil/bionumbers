@@ -1,5 +1,6 @@
 // var external_endpoint = "http://localhost:5820/bionumbers2/query";
-var external_endpoint = 'http://hydrophil.pagekite.me/bionumbers2/query'
+var external_endpoint = 'http://hydrophil.ngrok.com/bionumbers2/query'
+// var external_endpoint = 'http://hydrophil.pagekite.me/bionumbers2/query'
 var uniprot_endpoint = "http://togostanza.org/sparql"
 jQuery.fn.d3Click = function () {
   this.each(function (i, e) {
@@ -249,15 +250,60 @@ $(document).ready(function() {
     }
     // search function
     $("#search_input").bind('input', function () {
+        var findparents = function(name,json,list) {
+            for (var i = 0; i < json.length; i++) {
+                var parent = json[i].parent_name.value;
+                var current = json[i].child_name.value;
+                if (current == name) {
+                    // check if not in list
+                    if (list.indexOf(parent) == -1) {
+                        list[list.length] = parent;
+                        findparents(parent,json,list);
+                        return list
+                    }
+                } 
+            }
+        }
+        var ispresent = function(name) {
+            return $('text:contains("' + name +'")').filter(function(){
+                if ($(this).text() === name) {
+                    return true
+                } else {
+                    return false
+                }
+            });
+        }        
         var query = $(this).val();
+        var json = JSON.parse($('#json-dump').html());
         if (query.length > 4) {
             console.log(query);
-            $('text:contains("' + query +'")').filter(function(){
-                if ($(this).text() === query) {
-                    console.log($(this).text());
-                    $(this).d3Click();
+            // find parents and reverse to start with earliest ancester, return empty if nothing is found
+            var parent_list = findparents(query, json, []) || [];
+            parent_list = parent_list.reverse();
+            // almost done, add some while loop
+            // deactivate querying while opening nodes
+            $('#node_query').attr('query','false');
+            if (parent_list.length > 0) {
+                // add current to list
+                parent_list[parent_list.length] = query;
+                console.log(parent_list);
+                for (var i = 0; i < parent_list.length - 1; i++) {
+                    $('text:contains("' + parent_list[i] +'")').filter(function(){
+                        if ($(this).text() === parent_list[i]) {
+                            console.log($(this).prev().attr('class') == 'closed');
+                            // check if circle is closed
+                            if ($(this).prev().attr('class') == 'closed') {
+                                console.log($(this).text());
+                                $(this).d3Click();
+                                while (!ispresent(parent_list[i + 1]).length) {
+                                    console.log('waiting');
+                                };
+                            }
+                        }
+                    });
                 };
-            });
+            }
+            $('#node_query').attr('query','false');
         };
     });
 });
