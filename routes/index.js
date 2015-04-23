@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var arg_json = { title: 'BioNumbers 2.0' };
+var arg_json = { title: 'BioNumbers Explorer' };
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

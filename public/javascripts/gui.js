@@ -1,5 +1,6 @@
-// var external_endpoint = "http://localhost:5820/bionumbers2/query";
-var external_endpoint = 'http://hydrophil.ngrok.com/bionumbers2/query'
+var external_endpoint = "http://localhost:5820/bionumbers2/query";
+// var external_endpoint = 'http://hydrophil.ngrok.com/bionumbers2/query'
+
 var uniprot_endpoint = "http://togostanza.org/sparql"
 jQuery.fn.d3Click = function () {
   this.each(function (i, e) {
@@ -136,9 +137,19 @@ function render_prop_table(json) {
         //     var year = data.resultList.result[0].pubYear;
         //     console.log(year);
         // });
+        //  get bionumber from uri
+        var bionumber = this.property.value.split('/')[4];
+        // create link to bionumbers database
+        var linkstring = '<a target="_blank" href="http://bionumbers.hms.harvard.edu/bionumber.aspx?&id=' + bionumber + '">'
+        // check if value exists, otherwise use range
+        if (typeof this.value != "undefined") {
+            var valuestring = this.value.value;
+        } else {
+            var valuestring = this.range.value;
+        }
         tableContent += '<tr>';
-        tableContent += '<td>' + this.name.value + '</td>';
-        tableContent += '<td>' + this.value.value + '</td>';
+        tableContent += '<td>' + linkstring + this.name.value + '</a></td>';
+        tableContent += '<td>' + valuestring + '</td>';
         tableContent += '<td>' + this.unit.value + '</td>';
         tableContent += '<td>' + this.organism.value + '</td>';
         tableContent += '</tr>';
@@ -228,12 +239,13 @@ function nodeclick(thisnode){
         // query with case insensitive filter
         var sparql = "\
         prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT ?name ?value ?unit ?organism \
+        SELECT ?property ?name ?value ?unit ?organism ?range \
         WHERE { ?property a dwc:MeasurementOrFact; \
-                          dwc:measurementType ?name ; \
-                          dwc:measurementValue ?value ; \
-                          dwc:measurementUnit ?unit ; \
-                          dwc:organismName ?organism . \
+                        dwc:measurementType ?name ; \
+                        dwc:measurementUnit ?unit ; \
+                        dwc:organismName ?organism . \
+                        OPTIONAL { ?property bion2:measurementRange ?range } . \
+                        OPTIONAL { ?property dwc:measurementValue ?value } \
         FILTER (" + filter_string + ") \
         } LIMIT 50";
         d3sparql.query(external_endpoint, sparql, render_prop_table);
