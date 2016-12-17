@@ -13,57 +13,6 @@ jQuery.fn.d3Click = function () {
   });
 };
 
-// sparql query from uniprot taxonomy for different species
-function exec_spec() {
-    // get all present queries from bionumbers
-    var sparql = "\
-        PREFIX owl: <http://www.w3.org/2002/07/owl#> \
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
-        prefix dwc: <http://rs.tdwg.org/dwc/terms/> \
-        SELECT DISTINCT ?name \
-        WHERE { ?property a dwc:MeasurementOrFact; \
-                          dwc:organismName ?name . \
-        } \
-    ";
-    var url = external_endpoint + "?query=" + encodeURIComponent(sparql)
-    var mime = "application/sparql-results+json"
-    // specialized query
-    d3.xhr(url, mime, function(request) {
-        var json = JSON.parse(request.responseText)
-        var species_list =[];
-        $.each(json.results.bindings, function() {
-            // get latin name from last two strings
-            var species = this.name.value.split(" ").slice(-2).join(" ");
-            species_list[species_list.length] = species;
-        });
-        // user shorter list, otherwise the query doesn't work
-        var limit =100;
-        for (var i = 0; i < limit; i++) {
-            species_list[i] = "?scientific_name = '" + species_list[i] + "' ";
-        };
-        // query with species filter, right now limited too 100 species
-        var filter_string = species_list.slice(1,limit).join(' || ');
-        var sparql = "\
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \
-            PREFIX up: <http://purl.uniprot.org/core/> \
-            SELECT DISTINCT ?root_name ?parent_name ?child_name \
-            FROM <http://togogenome.org/graph/uniprot/> \
-            WHERE \
-            { \
-              VALUES ?root_name { 'cellular organisms' } \
-              ?root up:scientificName ?root_name .  \
-              ?child rdfs:subClassOf+ ?root . \
-              ?child rdfs:subClassOf ?parent . \
-              ?child up:scientificName ?child_name . \
-              ?parent up:scientificName ?parent_name . \
-              { \
-                ?child (^rdfs:subClassOf*)/up:scientificName ?scientific_name \
-                FILTER (" + filter_string + ") \
-              } \
-            }";
-        d3sparql.query(uniprot_endpoint, sparql, render_spec);
-    })
-}
 // sparql query from bionumbers for different properties
 function exec_prop() {
     var sparql = "\
@@ -79,28 +28,6 @@ function exec_prop() {
           ?parent rdfs:label ?parent_name . \
         }";
     d3sparql.query(external_endpoint, sparql, render_prop);
-}
-
-// render json and build tree
-function render_spec(json) {
-  var config = {
-    // for d3sparql.tree()
-    "root": "root_name",
-    "parent": "parent_name",
-    "child": "child_name",
-    "selector": "#spec_treeview"
-  };
-  $('#json-dump').html(JSON.stringify(json.results.bindings));
-    // add stuff to search input
-    var datalist = " ";
-    $.each(json.results.bindings, function() {
-       datalist += "<option value ='" + this.child_name.value + "'>";
-    });
-    $('#spec_datalist').html(datalist);
-    // empty div
-    $('#spec_treeview').empty();
-    // build tree
-  intertree.tree(json, config);
 }
 
 // render json and build tree
@@ -159,20 +86,6 @@ function render_prop_table(json) {
     $('#proptable tbody').html(tableContent);
 }
 
-function render_spec_table(json) {
-    // console.log(JSON.stringify(json.results));
-    var tableContent = '';
-    $.each(json.results.bindings, function(){
-        tableContent += '<tr>';
-        tableContent += '<td>' + this.name.value + '</td>';
-        tableContent += '<td>' + this.value.value + '</td>';
-        tableContent += '<td>' + this.unit.value + '</td>';
-        tableContent += '<td>' + this.organism.value + '</td>';
-        tableContent += '</tr>';
-    });
-    $('#proptable tbody').html(tableContent);
-}
-
 // assigned in intertree.js afer updating the tree
 function nodeclick(thisnode){
     // get children from each clicked node to create query
@@ -192,6 +105,8 @@ function nodeclick(thisnode){
     }
     // remove selected classes
     d3.selectAll(".node ").classed("selected", false);
+    // show csv button
+    
     // build tree according to which div is present
     if ($('#spec_treeview').length) {
         species = $(thisnode).find('text').html();
@@ -270,6 +185,73 @@ function try_node(query) {
         });
     }
 }
+// from https://bl.ocks.org/kalebdf/ee7a5e7f44416b2116c0
+function exportTableToCSV($table, filename) {
+    var $headers = $table.find('tr:has(th)')
+        ,$rows = $table.find('tr:has(td)')
+
+        // Temporary delimiter characters unlikely to be typed by keyboard
+        // This is to avoid accidentally splitting the actual contents
+        ,tmpColDelim = String.fromCharCode(11) // vertical tab character
+        ,tmpRowDelim = String.fromCharCode(0) // null character
+
+        // actual delimiter characters for CSV format
+        ,colDelim = '","'
+        ,rowDelim = '"\r\n"';
+
+        // Grab text from table into CSV formatted string
+        var csv = '"';
+        csv += formatRows($headers.map(grabRow));
+        csv += rowDelim;
+        csv += formatRows($rows.map(grabRow)) + '"';
+
+        // Data URI
+        var csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+    // For IE (tested 10+)
+    if (window.navigator.msSaveOrOpenBlob) {
+        var blob = new Blob([decodeURIComponent(encodeURI(csv))], {
+            type: "text/csv;charset=utf-8;"
+        });
+        navigator.msSaveBlob(blob, filename);
+    } else {
+        $(this)
+            .attr({
+                'download': filename
+                ,'href': csvData
+                //,'target' : '_blank' //if you want it to open in a new window
+        });
+    }
+
+    //------------------------------------------------------------
+    // Helper Functions 
+    //------------------------------------------------------------
+    // Format the output so it has the appropriate delimiters
+    function formatRows(rows){
+        return rows.get().join(tmpRowDelim)
+            .split(tmpRowDelim).join(rowDelim)
+            .split(tmpColDelim).join(colDelim);
+    }
+    // Grab and format a row from the table
+    function grabRow(i,row){
+         
+        var $row = $(row);
+        //for some reason $cols = $row.find('td') || $row.find('th') won't work...
+        var $cols = $row.find('td'); 
+        if(!$cols.length) $cols = $row.find('th');  
+
+        return $cols.map(grabCol)
+                    .get().join(tmpColDelim);
+    }
+    // Grab and format a column from the table 
+    function grabCol(j,col){
+        var $col = $(col),
+            $text = $col.text();
+
+        return $text.replace('"', '""'); // escape double quotes
+
+    }
+}
 
 $(document).ready(function() {
     // RUN!
@@ -315,20 +297,9 @@ $(document).ready(function() {
                 parent = parent_list[i];
                 try_node(parent);
             }
-
-            // $('text:contains("' + query +'")').filter(function(){
-            //     if ($(this).text() === query) {
-            //         console.log($(this).text());
-            //         $(this).d3Click();
-            //     };
-            // });
         }
-            
-            // var checkExist = setInterval(function() {
-            //    if ($('text:is("' + query +'")').length) {
-            //       console.log("Exists!");
-            //       clearInterval(checkExist);
-            //    }
-            // }, 100);
+    });
+    $('#csvexport').click(function(event) {
+        /* Act on the event */
     });
 });

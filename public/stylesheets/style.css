@@ -60,6 +60,13 @@ body {
   right: 100px;
   width: 200px;
 }
+#propname {
+  margin: 0;
+  display: inline-block;
+}
+#csvexport {
+  float: right;
+}
 @media (max-width 992px) {
   body {
     padding-top: 0px;
