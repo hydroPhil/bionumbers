@@ -4,13 +4,13 @@ block content
     #main-wrapper
         #main
             .page-header
-                h4 Explore species and their properties, displays available propeties of children
-                input#search_input.form-control(type='text', placeholder='Search species', list="spec_datalist")
-                datalist#spec_datalist
-            #spec_treeview.scrollable.col-md-8
+                h4 Select common properties to compare between different organisms
+                input#search_input.form-control(type='text', placeholder='Search properties', list="prop_datalist")
+                datalist#prop_datalist
+            #prop_treeview.scrollable.col-md-8
                 | loading treeview
             #proptable.col-md-4
-                h4#specname
+                h5#propname
                 table.table.table-condensed
                     thead
                         tr

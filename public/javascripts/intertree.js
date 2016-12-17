@@ -68,7 +68,8 @@ function update(source) {
   var nodeEnter = node.enter().append("g")
       .attr("class", "node")
       .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
-      .on("click", click);
+      .on("click", click)
+      .on("open", open)
 
   nodeEnter.append("circle")
       .attr("r", 1e-6)
@@ -148,6 +149,18 @@ function click(d) {
     d._children = null;
   }
   nodeclick(this);
+  update(d);
+}
+// Just open without clicking
+function open(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+  // nodeclick(this);
   update(d);
 }
 }
