@@ -1,7 +1,9 @@
 // var external_endpoint = "http://localhost:5820/bionumbers2/query";
-var external_endpoint = 'http://hydrophil.ngrok.com/bionumbers2/query'
+var external_endpoint = 'http://af6480fd.ngrok.io/bionumbers2/query'
 
 var uniprot_endpoint = "http://togostanza.org/sparql"
+
+// specific click handler for d3 elements
 jQuery.fn.d3Click = function () {
   this.each(function (i, e) {
     var evt = document.createEvent("MouseEvents");
@@ -188,6 +190,8 @@ function nodeclick(thisnode){
         }
         return list;
     }
+    // remove selected classes
+    d3.selectAll(".node ").classed("selected", false);
     // build tree according to which div is present
     if ($('#spec_treeview').length) {
         species = $(thisnode).find('text').html();
@@ -251,6 +255,22 @@ function nodeclick(thisnode){
         d3sparql.query(external_endpoint, sparql, render_prop_table);
     }
 }
+
+// function that tries to click a node and waits until it is there
+function try_node(query) {
+    if (!$('text:contains("' + query +'")').size()) {
+        window.requestAnimationFrame(try_node);
+    } else {
+        $('text:contains("' + query +'")').filter(function(){
+            if ($(this).text() === query) {
+                console.log($(this).text());
+                $(this).d3Click();
+                d3.select(this.parentNode).classed('selected',true)
+            };
+        });
+    }
+}
+
 $(document).ready(function() {
     // RUN!
     // check which div is present
@@ -260,16 +280,55 @@ $(document).ready(function() {
         exec_prop();
     }
     // search function
-    $("#search_input").bind('input', function () {
+    $("#search_input").on('input', function () {
+        var findparents = function(name,json,list) {
+            for (var i = 0; i < json.length; i++) {
+                var parent = json[i].parent_name.value;
+                var current = json[i].child_name.value;
+                if (current == name) {
+                    // check if not in list
+                    if (list.indexOf(parent) == -1) {
+                        list[list.length] = parent;
+                        findparents(parent,json,list);
+                        return list
+                    }
+                } 
+            }
+        }
         var query = $(this).val();
-        if (query.length > 4) {
-            console.log(query);
-            $('text:contains("' + query +'")').filter(function(){
-                if ($(this).text() === query) {
-                    console.log($(this).text());
-                    $(this).d3Click();
-                };
-            });
-        };
+        if($('#prop_datalist option').filter(function(){
+            return this.value === query;        
+        }).length) {
+            
+            //send ajax request
+            // alert(this.value);
+            var json = JSON.parse($('#json-dump').html());
+            // create list of parents from json dump
+            var parent_list = findparents(query, json, []) || [];
+            parent_list = parent_list.reverse();
+            // replace last element with query
+            parent_list[parent_list.length] = query;
+            parent_list = parent_list.slice(1, parent_list.length)
+            console.log(parent_list)
+            d3.selectAll(".node ").classed("selected", false);
+            for (var i = 0; i < parent_list.length; i++) {
+                parent = parent_list[i];
+                try_node(parent);
+            }
+
+            // $('text:contains("' + query +'")').filter(function(){
+            //     if ($(this).text() === query) {
+            //         console.log($(this).text());
+            //         $(this).d3Click();
+            //     };
+            // });
+        }
+            
+            // var checkExist = setInterval(function() {
+            //    if ($('text:is("' + query +'")').length) {
+            //       console.log("Exists!");
+            //       clearInterval(checkExist);
+            //    }
+            // }, 100);
     });
 });

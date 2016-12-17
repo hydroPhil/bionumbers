@@ -8,6 +8,12 @@
   stroke-width: 1.5px;
 }
 
+.selected circle{
+  fill: #fff;
+  stroke: crimson;
+  stroke-width: 1.5px;
+}
+
 .node text {
   font: 10px sans-serif;
 }
