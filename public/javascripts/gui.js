@@ -28,6 +28,8 @@ function exec_prop() {
           ?parent rdfs:label ?parent_name . \
         }";
     d3sparql.query(external_endpoint, sparql, render_prop);
+    // show export button
+    $('#pngexportbtn').removeClass('hidden');
 }
 
 // render json and build tree
@@ -106,7 +108,7 @@ function nodeclick(thisnode){
     // remove selected classes
     d3.selectAll(".node ").classed("selected", false);
     // show csv button
-    $('#csvexport').removeClass('hidden')
+    $('#csvexportbtn').removeClass('hidden');
     // build tree according to which div is present
     if ($('#spec_treeview').length) {
         species = $(thisnode).find('text').html();
@@ -255,12 +257,9 @@ function exportTableToCSV($table, filename) {
 
 $(document).ready(function() {
     // RUN!
-    // check which div is present
-    if ($('#spec_treeview').length) {
-        exec_spec();
-    } else if ($('#prop_treeview').length) {
-        exec_prop();
-    }
+    // load tree
+    exec_prop();
+
     // search function
     $("#search_input").on('input', function () {
         var findparents = function(name,json,list) {
@@ -299,8 +298,12 @@ $(document).ready(function() {
             }
         }
     });
-    $('#export').click(function(event) {
+    // click on link wrapped around btn
+    $('#csvexport').click(function(event) {
         outputfile = $('#propname').text() + '.csv';
         exportTableToCSV.apply(this,[$('#proptable > table'),outputfile]);
+    });
+    $('#pngexportbtn').click(function(event) {
+        saveSvgAsPng($('#prop_treeview svg')[0], "diagram.png");
     });
 });

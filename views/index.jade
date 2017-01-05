@@ -7,12 +7,14 @@ block content
                 h4 Select common properties to compare between different organisms
                 input#search_input.form-control(type='text', placeholder='Search properties', list="prop_datalist")
                 datalist#prop_datalist
+            #png-export-div
+                button.btn.btn-default.btn-xs#pngexportbtn.hidden PNG export
             #prop_treeview.scrollable.col-md-8
                 | loading treeview
             #proptable.col-md-4
                 h5#propname
-                a#export(href='#', role='button')
-                    button.btn.btn-default.btn-xs#csvexport.hidden CSV export
+                a#csvexport(href='#', role='button')
+                    button.btn.btn-default.btn-xs#csvexportbtn.hidden CSV export
                 table.table.table-condensed
                     thead
                         tr
