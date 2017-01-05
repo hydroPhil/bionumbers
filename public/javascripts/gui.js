@@ -1,5 +1,5 @@
 // var external_endpoint = "http://localhost:5820/bionumbers2/query";
-var external_endpoint = 'http://af6480fd.ngrok.io/bionumbers2/query'
+var external_endpoint = 'http://5ffd45b4.ngrok.io/bionumbers2/query'
 
 var uniprot_endpoint = "http://togostanza.org/sparql"
 
@@ -106,7 +106,7 @@ function nodeclick(thisnode){
     // remove selected classes
     d3.selectAll(".node ").classed("selected", false);
     // show csv button
-    
+    $('#csvexport').removeClass('hidden')
     // build tree according to which div is present
     if ($('#spec_treeview').length) {
         species = $(thisnode).find('text').html();
@@ -299,7 +299,8 @@ $(document).ready(function() {
             }
         }
     });
-    $('#csvexport').click(function(event) {
-        /* Act on the event */
+    $('#export').click(function(event) {
+        outputfile = $('#propname').text() + '.csv';
+        exportTableToCSV.apply(this,[$('#proptable > table'),outputfile]);
     });
 });
